@@ -1,5 +1,6 @@
 export interface Headline {
   title: string;
+  description: string;
   source: string;
 }
 
@@ -13,19 +14,32 @@ const RSS_FEEDS = [
   },
 ];
 
-function parseTitles(xml: string, source: string): Headline[] {
+function extractTag(xml: string, tag: string): string {
+  const cdataRegex = new RegExp(
+    `<${tag}>[\\s]*<!\\[CDATA\\[([\\s\\S]*?)\\]\\]>[\\s]*</${tag}>`,
+    "i"
+  );
+  const plainRegex = new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`, "i");
+  const match = xml.match(cdataRegex) || xml.match(plainRegex);
+  return match ? match[1].trim() : "";
+}
+
+function stripHtml(str: string): string {
+  return str.replace(/<[^>]*>/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
+}
+
+function parseItems(xml: string, source: string): Headline[] {
   const headlines: Headline[] = [];
   const itemRegex = /<item[\s>][\s\S]*?<\/item>/gi;
-  const titleRegex = /<title><!\[CDATA\[([\s\S]*?)\]\]><\/title>|<title>([\s\S]*?)<\/title>/i;
-
   const items = xml.match(itemRegex) || [];
+
   for (const item of items) {
-    const titleMatch = item.match(titleRegex);
-    if (titleMatch) {
-      const title = (titleMatch[1] || titleMatch[2] || "").trim();
-      if (title) {
-        headlines.push({ title, source });
-      }
+    const title = extractTag(item, "title");
+    const rawDesc = extractTag(item, "description");
+    const description = stripHtml(rawDesc);
+
+    if (title) {
+      headlines.push({ title, description, source });
     }
   }
   return headlines;
@@ -41,7 +55,7 @@ export async function fetchHeadlines(): Promise<Headline[]> {
         throw new Error(`${feed.source}: HTTP ${response.status}`);
       }
       const xml = await response.text();
-      return parseTitles(xml, feed.source);
+      return parseItems(xml, feed.source);
     })
   );
 

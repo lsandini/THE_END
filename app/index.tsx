@@ -122,7 +122,11 @@ export default function Headlines() {
             onPress={() =>
               router.push({
                 pathname: "/story",
-                params: { headline: item.title },
+                params: {
+                  headline: item.title,
+                  description: item.description,
+                  source: item.source,
+                },
               })
             }
             style={{
