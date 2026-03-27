@@ -9,6 +9,7 @@ import {
   Animated,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
 import { fetchHeadlines } from "../services/news";
 import { getMostNegative, ScoredHeadline } from "../services/sentiment";
 
@@ -43,8 +44,9 @@ export default function Headlines() {
     loadHeadlines();
   }, [loadHeadlines]);
 
-  useEffect(() => {
-    if (!loading) {
+  useFocusEffect(
+    useCallback(() => {
+      fadeAnim.setValue(0);
       const timer = setTimeout(() => {
         Animated.timing(fadeAnim, {
           toValue: 1,
@@ -53,8 +55,8 @@ export default function Headlines() {
         }).start();
       }, 1000);
       return () => clearTimeout(timer);
-    }
-  }, [loading, fadeAnim]);
+    }, [fadeAnim])
+  );
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -63,19 +65,20 @@ export default function Headlines() {
 
   if (loading) {
     return (
-      <View
+      <Animated.View
         style={{
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: BG,
+          opacity: fadeAnim,
         }}
       >
         <ActivityIndicator size="large" color={TEXT_DIM} />
         <Text style={{ marginTop: 16, color: TEXT_DIM, fontWeight: "300" }}>
           Scanning for doom...
         </Text>
-      </View>
+      </Animated.View>
     );
   }
 
