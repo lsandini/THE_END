@@ -50,10 +50,10 @@ export default function Headlines() {
       const timer = setTimeout(() => {
         Animated.timing(fadeAnim, {
           toValue: 1,
-          duration: 1500,
+          duration: 1000,
           useNativeDriver: true,
         }).start();
-      }, 1000);
+      }, 500);
       return () => clearTimeout(timer);
     }, [fadeAnim])
   );
