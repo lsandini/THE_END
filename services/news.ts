@@ -45,12 +45,21 @@ function parseItems(xml: string, source: string): Headline[] {
   return headlines;
 }
 
+import { Platform } from "react-native";
+
+const CORS_PROXY = "https://api.allorigins.win/raw?url=";
+
+function feedUrl(url: string): string {
+  if (Platform.OS === "web") {
+    return CORS_PROXY + encodeURIComponent(url);
+  }
+  return url;
+}
+
 export async function fetchHeadlines(): Promise<Headline[]> {
   const results = await Promise.allSettled(
     RSS_FEEDS.map(async (feed) => {
-      const response = await fetch(feed.url, {
-        headers: { "User-Agent": "THE_END/1.0" },
-      });
+      const response = await fetch(feedUrl(feed.url));
       if (!response.ok) {
         throw new Error(`${feed.source}: HTTP ${response.status}`);
       }
