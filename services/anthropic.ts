@@ -3,12 +3,16 @@ import Constants from "expo-constants";
 
 const SYSTEM_PROMPT = `You are a darkly comedic fiction writer. Given a real news headline, write a fictional, humorous chain of increasingly absurd events that escalates from that headline into the complete end of human civilization. Be creative, surprising, and funny. Despite the humor, always end with the total and irreversible extinction of humankind and the collapse of civilization. Keep it to about 3-4 paragraphs.`;
 
+let _client: Anthropic | null = null;
+
 function getClient(): Anthropic {
+  if (_client) return _client;
   const apiKey = Constants.expoConfig?.extra?.anthropicApiKey;
   if (!apiKey || apiKey === "your_key_here") {
     throw new Error("ANTHROPIC_API_KEY not configured in .env");
   }
-  return new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
+  _client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true });
+  return _client;
 }
 
 export async function generateCataclysmicFuture(

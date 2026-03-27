@@ -4,7 +4,8 @@ import { useLocalSearchParams } from "expo-router";
 import { generateCataclysmicFuture } from "../services/anthropic";
 
 export default function Story() {
-  const { headline } = useLocalSearchParams<{ headline: string }>();
+  const params = useLocalSearchParams<{ headline: string }>();
+  const headline = Array.isArray(params.headline) ? params.headline[0] : params.headline;
   const [story, setStory] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

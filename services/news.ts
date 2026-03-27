@@ -37,6 +37,9 @@ export async function fetchHeadlines(): Promise<Headline[]> {
       const response = await fetch(feed.url, {
         headers: { "User-Agent": "THE_END/1.0" },
       });
+      if (!response.ok) {
+        throw new Error(`${feed.source}: HTTP ${response.status}`);
+      }
       const xml = await response.text();
       return parseTitles(xml, feed.source);
     })

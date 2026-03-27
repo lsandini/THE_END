@@ -63,7 +63,7 @@ export default function Headlines() {
       ) : null}
       <FlatList
         data={headlines}
-        keyExtractor={(_, index) => index.toString()}
+        keyExtractor={(item) => `${item.source}:${item.title}`}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
