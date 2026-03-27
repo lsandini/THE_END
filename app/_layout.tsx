@@ -1,13 +1,14 @@
 import { Stack } from "expo-router";
 
-const BG = "#4F4F4F";
-const TEXT = "#E0E0E0";
+const BG = "#F4F4F4";
+const TEXT = "#2A2A2A";
 
 export default function RootLayout() {
   return (
     <Stack
       screenOptions={{
         animation: "fade",
+        animationDuration: 800,
         headerStyle: { backgroundColor: BG },
         headerTintColor: TEXT,
         headerTitleStyle: { fontWeight: "300" },

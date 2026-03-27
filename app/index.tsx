@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -6,15 +6,16 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  Animated,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { fetchHeadlines } from "../services/news";
 import { getMostNegative, ScoredHeadline } from "../services/sentiment";
 
-const BG = "#4F4F4F";
-const TEXT = "#E0E0E0";
-const TEXT_DIM = "#A0A0A0";
-const BORDER = "#5E5E5E";
+const BG = "#F4F4F4";
+const TEXT = "#2A2A2A";
+const TEXT_DIM = "#6B6B6B";
+const BORDER = "#D8D8D8";
 
 export default function Headlines() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function Headlines() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const loadHeadlines = useCallback(async () => {
     try {
@@ -40,6 +42,19 @@ export default function Headlines() {
   useEffect(() => {
     loadHeadlines();
   }, [loadHeadlines]);
+
+  useEffect(() => {
+    if (!loading) {
+      const timer = setTimeout(() => {
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 800,
+          useNativeDriver: true,
+        }).start();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, fadeAnim]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -65,7 +80,7 @@ export default function Headlines() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: BG }}>
+    <Animated.View style={{ flex: 1, backgroundColor: BG, opacity: fadeAnim }}>
       {error ? (
         <Text
           style={{
@@ -132,6 +147,6 @@ export default function Headlines() {
           </TouchableOpacity>
         )}
       />
-    </View>
+    </Animated.View>
   );
 }
