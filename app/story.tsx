@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Animated,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { generateCataclysmicFuture } from "../services/anthropic";
 
 const BG = "#F4F4F4";
@@ -16,6 +16,7 @@ const TEXT_DIM = "#6B6B6B";
 const BORDER = "#D8D8D8";
 
 export default function Story() {
+  const router = useRouter();
   const params = useLocalSearchParams<{
     headline: string;
     description: string;
@@ -164,19 +165,42 @@ export default function Story() {
       ) : null}
 
       {story ? (
-        <Animated.Text
-          style={{
-            fontSize: 16,
-            lineHeight: 26,
-            color: TEXT,
-            fontWeight: "300",
-            marginTop: 24,
-            paddingBottom: 48,
-            opacity: storyFade,
-          }}
-        >
-          {story}
-        </Animated.Text>
+        <Animated.View style={{ opacity: storyFade }}>
+          <Text
+            style={{
+              fontSize: 16,
+              lineHeight: 26,
+              color: TEXT,
+              fontWeight: "300",
+              marginTop: 24,
+            }}
+          >
+            {story}
+          </Text>
+          <TouchableOpacity
+            onPress={() => router.replace("/")}
+            style={{
+              borderWidth: 1,
+              borderColor: BORDER,
+              paddingVertical: 14,
+              paddingHorizontal: 24,
+              alignSelf: "center",
+              marginTop: 32,
+              marginBottom: 48,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: "300",
+                color: TEXT,
+                textAlign: "center",
+              }}
+            >
+              Back to the headlines
+            </Text>
+          </TouchableOpacity>
+        </Animated.View>
       ) : null}
     </ScrollView>
   );
