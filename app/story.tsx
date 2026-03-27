@@ -37,10 +37,10 @@ export default function Story() {
       const timer = setTimeout(() => {
         Animated.timing(fadeAnim, {
           toValue: 1,
-          duration: 800,
+          duration: 1500,
           useNativeDriver: true,
         }).start();
-      }, 500);
+      }, 1000);
       return () => clearTimeout(timer);
     }
   }, [loading, fadeAnim]);

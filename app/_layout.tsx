@@ -8,7 +8,7 @@ export default function RootLayout() {
     <Stack
       screenOptions={{
         animation: "fade",
-        animationDuration: 800,
+        animationDuration: 1500,
         headerStyle: { backgroundColor: BG },
         headerTintColor: TEXT,
         headerTitleStyle: { fontWeight: "300" },
