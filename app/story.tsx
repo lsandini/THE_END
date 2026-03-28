@@ -6,14 +6,11 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Animated,
+  Platform,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { generateCataclysmicFuture } from "../services/anthropic";
-
-const BG = "#F4F4F4";
-const TEXT = "#2A2A2A";
-const TEXT_DIM = "#6B6B6B";
-const BORDER = "#D8D8D8";
+import { C, T, glow, textGlow } from "../theme";
 
 export default function Story() {
   const params = useLocalSearchParams<{
@@ -37,27 +34,49 @@ export default function Story() {
 
   const contentFade = useRef(new Animated.Value(0)).current;
   const storyFade = useRef(new Animated.Value(0)).current;
+  const buttonPulse = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     const timer = setTimeout(() => {
       Animated.timing(contentFade, {
         toValue: 1,
-        duration: 1500,
+        duration: 1000,
         useNativeDriver: true,
       }).start();
-    }, 1000);
+    }, 400);
     return () => clearTimeout(timer);
   }, [contentFade]);
 
+  // subtle button pulse
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(buttonPulse, {
+          toValue: 0.85,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(buttonPulse, {
+          toValue: 1,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [buttonPulse]);
+
   useEffect(() => {
     if (story || error) {
+      storyFade.setValue(0);
       const timer = setTimeout(() => {
         Animated.timing(storyFade, {
           toValue: 1,
-          duration: 1500,
+          duration: 1200,
           useNativeDriver: true,
         }).start();
-      }, 500);
+      }, 300);
       return () => clearTimeout(timer);
     }
   }, [story, error, storyFade]);
@@ -73,40 +92,29 @@ export default function Story() {
   };
 
   return (
-    <ScrollView style={{ flex: 1, padding: 16, backgroundColor: BG }}>
+    <ScrollView
+      style={{ flex: 1, backgroundColor: C.bg }}
+      contentContainerStyle={{
+        padding: 20,
+        paddingBottom: 60,
+        maxWidth: 640,
+        width: "100%",
+        alignSelf: "center" as any,
+      }}
+    >
       <Animated.View style={{ opacity: contentFade }}>
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "400",
-            color: TEXT,
-            marginBottom: 8,
-          }}
-        >
-          {headline}
-        </Text>
+        <Text style={{ ...T.title, marginBottom: 10 }}>{headline}</Text>
 
         {source ? (
-          <Text
-            style={{
-              fontSize: 12,
-              color: TEXT_DIM,
-              fontWeight: "300",
-              marginBottom: 16,
-            }}
-          >
-            {source}
-          </Text>
+          <Text style={{ ...T.caption, marginBottom: 20 }}>{source}</Text>
         ) : null}
 
         {description ? (
           <Text
             style={{
-              fontSize: 15,
-              lineHeight: 24,
-              color: TEXT,
-              fontWeight: "300",
-              marginBottom: 24,
+              ...T.body,
+              color: C.textDim,
+              marginBottom: 32,
             }}
           >
             {description}
@@ -114,35 +122,46 @@ export default function Story() {
         ) : null}
 
         {!story && !loading && !error ? (
-          <TouchableOpacity
-            onPress={handleGenerate}
-            style={{
-              borderWidth: 1,
-              borderColor: BORDER,
-              paddingVertical: 14,
-              paddingHorizontal: 24,
-              alignSelf: "center",
-              marginTop: 8,
-            }}
-          >
-            <Text
+          <Animated.View style={{ alignSelf: "center", opacity: buttonPulse }}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={handleGenerate}
               style={{
-                fontSize: 15,
-                fontWeight: "300",
-                color: TEXT,
-                textAlign: "center",
+                backgroundColor: C.surface,
+                borderWidth: 1,
+                borderColor: C.accent + "50",
+                paddingVertical: 16,
+                paddingHorizontal: 36,
+                borderRadius: 2,
+                ...glow(C.accent + "30", 16),
               }}
             >
-              How it all ends
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: "400",
+                  color: C.accent,
+                  textAlign: "center",
+                  letterSpacing: 1.5,
+                  textTransform: "uppercase",
+                  ...textGlow(C.accent + "50", 8),
+                }}
+              >
+                How it all ends
+              </Text>
+            </TouchableOpacity>
+          </Animated.View>
         ) : null}
 
         {loading ? (
-          <View style={{ alignItems: "center", marginTop: 24 }}>
-            <ActivityIndicator size="large" color={TEXT_DIM} />
+          <View style={{ alignItems: "center", marginTop: 32 }}>
+            <ActivityIndicator size="large" color={C.accent} />
             <Text
-              style={{ marginTop: 16, color: TEXT_DIM, fontWeight: "300" }}
+              style={{
+                marginTop: 20,
+                ...T.caption,
+                ...textGlow(C.accent + "40", 10),
+              }}
             >
               Computing the end of civilization...
             </Text>
@@ -153,8 +172,8 @@ export default function Story() {
       {error ? (
         <Animated.Text
           style={{
-            color: "#B00020",
-            fontWeight: "300",
+            ...T.body,
+            color: C.error,
             marginTop: 24,
             opacity: storyFade,
           }}
@@ -165,18 +184,44 @@ export default function Story() {
 
       {story ? (
         <Animated.View style={{ opacity: storyFade }}>
-          <Text
+          {/* Divider */}
+          <View
             style={{
-              fontSize: 16,
-              lineHeight: 26,
-              color: TEXT,
-              fontWeight: "300",
-              marginTop: 24,
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 36,
+              marginBottom: 28,
+              gap: 12,
             }}
           >
-            {story}
-          </Text>
-          <View style={{ paddingBottom: 48 }} />
+            <View
+              style={{
+                flex: 1,
+                height: 1,
+                backgroundColor: C.accent + "30",
+              }}
+            />
+            <Text
+              style={{
+                fontSize: 10,
+                fontWeight: "400",
+                color: C.accent + "80",
+                letterSpacing: 3,
+                ...textGlow(C.accent + "40", 6),
+              }}
+            >
+              THE END BEGINS
+            </Text>
+            <View
+              style={{
+                flex: 1,
+                height: 1,
+                backgroundColor: C.accent + "30",
+              }}
+            />
+          </View>
+
+          <Text style={{ ...T.body, lineHeight: 28 }}>{story}</Text>
         </Animated.View>
       ) : null}
     </ScrollView>

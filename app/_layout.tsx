@@ -1,22 +1,30 @@
 import { Stack } from "expo-router";
-
-const BG = "#F4F4F4";
-const TEXT = "#2A2A2A";
+import { StatusBar } from "expo-status-bar";
+import { C } from "../theme";
 
 export default function RootLayout() {
   return (
-    <Stack
-      screenOptions={{
-        animation: "fade",
-        animationDuration: 1500,
-        headerStyle: { backgroundColor: BG },
-        headerTintColor: TEXT,
-        headerTitleStyle: { fontWeight: "300" },
-        contentStyle: { backgroundColor: BG },
-      }}
-    >
-      <Stack.Screen name="index" options={{ title: "THE END" }} />
-      <Stack.Screen name="story" options={{ title: "The End Begins..." }} />
-    </Stack>
+    <>
+      <StatusBar style="light" />
+      <Stack
+        screenOptions={{
+          animation: "fade",
+          animationDuration: 1200,
+          headerStyle: {
+            backgroundColor: C.bg,
+          },
+          headerTintColor: C.textDim,
+          headerTitleStyle: {
+            fontWeight: "300",
+            fontSize: 13,
+          },
+          headerShadowVisible: false,
+          contentStyle: { backgroundColor: C.bg },
+        }}
+      >
+        <Stack.Screen name="index" options={{ title: "THE END" }} />
+        <Stack.Screen name="story" options={{ title: "" }} />
+      </Stack>
+    </>
   );
 }

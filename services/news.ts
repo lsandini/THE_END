@@ -7,13 +7,24 @@ export interface Headline {
 }
 
 const RSS_FEEDS = [
+  // International / hard news
   { url: "https://feeds.bbci.co.uk/news/world/rss.xml", source: "BBC" },
   { url: "https://feeds.npr.org/1001/rss.xml", source: "NPR" },
   { url: "https://www.aljazeera.com/xml/rss/all.xml", source: "Al Jazeera" },
-  {
-    url: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
-    source: "NYT",
-  },
+  { url: "https://rss.nytimes.com/services/xml/rss/nyt/World.xml", source: "NYT" },
+  { url: "https://www.theguardian.com/world/rss", source: "The Guardian" },
+  { url: "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx1YlY4U0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en", source: "Google News" },
+  { url: "https://rss.dw.com/rdf/rss-en-all", source: "Deutsche Welle" },
+  { url: "https://www.france24.com/en/rss", source: "France 24" },
+  // US-heavy
+  { url: "https://feeds.washingtonpost.com/rss/world", source: "Washington Post" },
+  { url: "https://feeds.abcnews.com/abcnews/internationalheadlines", source: "ABC News" },
+  { url: "https://www.cbsnews.com/latest/rss/world", source: "CBS News" },
+  // Science / climate / existential risk
+  { url: "https://feeds.newscientist.com/home", source: "New Scientist" },
+  { url: "https://www.nature.com/nature.rss", source: "Nature" },
+  // Conflict / crisis
+  { url: "https://reliefweb.int/updates/rss.xml", source: "ReliefWeb" },
 ];
 
 // --- XML parsing for native ---
