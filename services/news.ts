@@ -23,8 +23,6 @@ const RSS_FEEDS = [
   // Science / climate / existential risk
   { url: "https://feeds.newscientist.com/home", source: "New Scientist" },
   { url: "https://www.nature.com/nature.rss", source: "Nature" },
-  // Conflict / crisis
-  { url: "https://reliefweb.int/updates/rss.xml", source: "ReliefWeb" },
 ];
 
 // --- XML parsing for native ---

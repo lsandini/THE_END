@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import Constants from "expo-constants";
 
-const SYSTEM_PROMPT = `You are a darkly comedic fiction writer. Given a real news headline, write a fictional, humorous chain of increasingly absurd events that escalates from that headline into the complete end of human civilization. Be creative, surprising, and funny. Despite the humor, always end with the total and irreversible extinction of humankind and the collapse of civilization. Keep it to about 3-4 paragraphs.`;
+const SYSTEM_PROMPT = `Darkly comedic fiction writer. From a news headline, write 3 short paragraphs of absurd escalation ending in human extinction. Be funny and surprising. No title or heading — start directly with narrative.`;
 
 let _client: Anthropic | null = null;
 
@@ -20,8 +20,10 @@ export async function generateCataclysmicFuture(
 ): Promise<string> {
   const client = getClient();
   const message = await client.messages.create({
-    model: "claude-sonnet-4-5-20250929",
-    max_tokens: 1024,
+    // model: "claude-opus-4-5-20250514",
+    // model: "claude-sonnet-4-5-20250929",
+    model: "claude-haiku-4-5-20251001",
+    max_tokens: 512,
     system: SYSTEM_PROMPT,
     messages: [
       {

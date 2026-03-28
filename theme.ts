@@ -6,8 +6,10 @@ export const C = {
   surface:   "#131316",
   surfaceHi: "#1A1A1F",
   text:      "#E2E0DC",
+  textWarm:  "#E0C4B8",       // warm off-white (headlines, intro phrases)
   textDim:   "#6E6D6A",
   accent:    "#C4302B",       // crimson
+  accentHi:  "#E84040",       // bright crimson (buttons, titles)
   accentDim: "#8B211D",
   border:    "#1F1F24",
   error:     "#C4302B",
@@ -41,6 +43,44 @@ export function glow(color: string, radius: number = 12): ViewStyle {
   };
 }
 
+// ─── Intense layered glow (Stranger Things style) ──────────
+export function glowIntense(color: string): ViewStyle {
+  if (Platform.OS === "web") {
+    return {
+      // @ts-ignore — web-only
+      boxShadow: [
+        `0 0 7px ${color}`,
+        `0 0 20px ${color}`,
+        `0 0 40px ${color}`,
+        `0 0 80px ${color}`,
+      ].join(", "),
+    };
+  }
+  return {
+    shadowColor: color,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 20,
+    elevation: 12,
+  };
+}
+
+export function textGlowIntense(color: string): TextStyle {
+  if (Platform.OS === "web") {
+    return {
+      // @ts-ignore — web-only
+      textShadowColor: color,
+      textShadowOffset: { width: 0, height: 0 },
+      textShadowRadius: 20,
+    };
+  }
+  return {
+    textShadowColor: color,
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 14,
+  };
+}
+
 // ─── Text glow (web = textShadow, native = noop) ──────────
 export function textGlow(color: string, radius: number = 8): TextStyle {
   if (Platform.OS === "web") {
@@ -61,10 +101,10 @@ export function textGlow(color: string, radius: number = 8): TextStyle {
 // ─── Shared typography ─────────────────────────────────────
 export const T = {
   headline: {
-    fontSize: 17,
-    fontWeight: "400",
-    color: C.text,
-    letterSpacing: 0.2,
+    fontSize: 16,
+    fontWeight: "300",
+    color: C.textWarm,
+    letterSpacing: 0.3,
   } as TextStyle,
   body: {
     fontSize: 15,
