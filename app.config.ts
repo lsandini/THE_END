@@ -18,6 +18,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: true,
     bundleIdentifier: "com.theend.app",
+    infoPlist: {
+      ITSAppUsesNonExemptEncryption: false,
+    },
   },
   android: {
     adaptiveIcon: {
@@ -33,6 +36,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   extra: {
     anthropicApiKey: process.env.ANTHROPIC_API_KEY,
+    eas: {
+      projectId: "dc4a92e7-03e8-4d09-b377-db7a7b8731d4",
+    },
   },
   plugins: ["expo-router"],
 });
