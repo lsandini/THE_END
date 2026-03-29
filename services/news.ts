@@ -37,15 +37,23 @@ function extractTag(xml: string, tag: string): string {
   return match ? match[1].trim() : "";
 }
 
-function stripHtml(str: string): string {
+function decodeEntities(str: string): string {
   return str
-    .replace(/<[^>]*>/g, "")
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
-    .trim();
+    .replace(/&nbsp;/g, " ");
+}
+
+function stripHtml(str: string): string {
+  // Decode entities first so encoded tags like &lt;p&gt; become <p>, then strip all tags
+  let cleaned = decodeEntities(str);
+  cleaned = cleaned.replace(/<[^>]*>/g, "");
+  // Decode again in case there were double-encoded entities
+  cleaned = decodeEntities(cleaned);
+  return cleaned.replace(/\s+/g, " ").trim();
 }
 
 function parseItemsFromXml(xml: string, source: string): Headline[] {
